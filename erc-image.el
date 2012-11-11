@@ -53,5 +53,5 @@
 
 
 
-(provide 'erc-images)
+(provide 'erc-image)
 ;;; erc-image.el ends here
