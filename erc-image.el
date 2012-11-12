@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 (require 'erc)
@@ -31,14 +31,15 @@
   "This function foo"
   (let* ((url (thing-at-point 'url))
          (file-name (concat "/tmp/" (car (last (split-string url "/"))))))
-    (shell-command (format "wget  %s --output-document=%s" url file-name))
-    file-name))
+    (when (string-match "\\.png$\\|\\.jpg$\\|\\.jpeg$" url)
+      (shell-command (format "wget  %s --output-document=%s" url file-name))
+      (create-image file-name))))
 
 (defun erc-show-image ()
   (beginning-of-buffer)
   (let ((url-found (search-forward "http" nil t)))
     (when url-found
-      (create-image (erc-wget-url)))))
+      (erc-wget-url))))
 
 (defun erc-show-url ()
   (interactive)
