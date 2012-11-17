@@ -32,7 +32,7 @@
   (let* ((url (thing-at-point 'url))
          (file-name (concat "/tmp/" (car (last (split-string url "/"))))))
     (when (string-match "\\.png$\\|\\.jpg$\\|\\.jpeg$" url)
-      (shell-command (format "wget  %s --output-document=%s" url file-name))
+      (start-process "wget"  nil "wget"  url (format "--output-document=%s" file-name))
       (create-image file-name))))
 
 (defun erc-show-image ()
@@ -47,7 +47,8 @@
     (when image
       (beginning-of-buffer)
       (insert-image image "images")
-      (insert "\n"))))
+      (insert "\n")
+      (put-text-property (point-min) (point-max) 'read-only t))))
 
 (add-hook 'erc-insert-modify-hook 'erc-show-url t)
 (add-hook 'erc-send-modify-hook 'erc-show-url t)
