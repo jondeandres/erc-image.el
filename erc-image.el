@@ -32,7 +32,9 @@
   (let* ((url (thing-at-point 'url))
          (file-name (concat "/tmp/" (car (last (split-string url "/"))))))
     (when (string-match "\\.png$\\|\\.jpg$\\|\\.jpeg$" url)
-      (start-process "wget"  nil "wget"  url (format "--output-document=%s" file-name))
+      ;; alternative way is
+      ;; http://stackoverflow.com/questions/4448055/download-a-file-with-emacs-lisp
+      (url-copy-file url file-name t t)
       (create-image file-name))))
 
 (defun erc-show-image ()
