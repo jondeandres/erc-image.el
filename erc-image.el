@@ -22,12 +22,20 @@
 
 ;;; Commentary:
 
-;;
+;;; Show inlined images (png/jpg) in erc buffers.
+;;; usage:
+
+;;; (require 'erc-image)
+;;;
+;;; This plugin subscribes to hooks `erc-insert-modify-hook' and
+;;; `erc-send-modify-hook' to download and show images. In this early
+;;; version it's doing this synchronously.
+
 
 ;;; Code:
 (require 'erc)
 
-(defun erc-wget-url ()
+(defun erc-image-get-url ()
   "This function foo"
   (let* ((url (thing-at-point 'url))
          (file-name (concat "/tmp/" (car (last (split-string url "/"))))))
@@ -37,25 +45,23 @@
       (url-copy-file url file-name t t)
       (create-image file-name))))
 
-(defun erc-show-image ()
+(defun erc-image-find-image ()
   (beginning-of-buffer)
   (let ((url-found (search-forward "http" nil t)))
     (when url-found
-      (erc-wget-url))))
+      (erc-image-get-url))))
 
-(defun erc-show-url ()
+(defun erc-image-show-url ()
   (interactive)
-  (let ((image (erc-show-image)))
+  (let ((image (erc-image-find-image)))
     (when image
       (beginning-of-buffer)
       (insert-image image "images")
       (insert "\n")
       (put-text-property (point-min) (point-max) 'read-only t))))
 
-(add-hook 'erc-insert-modify-hook 'erc-show-url t)
-(add-hook 'erc-send-modify-hook 'erc-show-url t)
-
-
+(add-hook 'erc-insert-modify-hook 'erc-image-show-url t)
+(add-hook 'erc-send-modify-hook 'erc-image-show-url t)
 
 (provide 'erc-image)
 ;;; erc-image.el ends here
