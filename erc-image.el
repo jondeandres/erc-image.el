@@ -36,32 +36,39 @@
 ;;; Code:
 (require 'erc)
 
-(defun erc-image-show-url ()
+(defgroup erc-image nil
+  "Enable image."
+  :group 'erc)
+
+(defcustom erc-image-regex "\\.png$\\|\\.jpg$\\|\\.jpeg$"
+  "Regex to mach URLs to be downloaded"
+  :group 'erc-image
+  :type '(regexp :tag "Regex"))
+
+(defun erc-image-show-url-image ()
   (interactive)
   (goto-char (point-min))
   (search-forward "http" nil t)
   (let ((url (thing-at-point 'url))
         (file-name))
-    (when (and url (string-match "\\.png$\\|\\.jpg$\\|\\.jpeg$" url))
-      (setq file-name (concat "/tmp/" (car (last (split-string url "/")))))
-      (when (string-match "\\.png$\\|\\.jpg$\\|\\.jpeg$" url)
-        (url-retrieve url
-                      (lambda  (status file-name buffer position)
-                        (goto-char (point-min))
-                        (search-forward "\n\n")
-                        (write-region (point) (point-max) file-name)
-                        (with-current-buffer buffer
-                          (save-excursion
-                            (let ((inhibit-read-only t))
-                              (goto-char position)
-                              (insert-image (create-image file-name) "[image]")
-                              (insert "\n")
-                              (put-text-property (point-min) (point-max) 'read-only t)))))
-                      (list
-                       file-name
-                       (current-buffer)
-                       (point-max)))))))
-
+    (when (and url (string-match erc-image-regex url))
+      (setq file-name (concat "/tmp/" (md5 url)))
+      (url-retrieve url
+                    (lambda  (status file-name buffer position)
+                      (goto-char (point-min))
+                      (search-forward "\n\n")
+                      (write-region (point) (point-max) file-name)
+                      (with-current-buffer buffer
+                        (save-excursion
+                          (let ((inhibit-read-only t))
+                            (goto-char position)
+                            (insert-image (create-image file-name) "[image]")
+                            (insert "\n")
+                            (put-text-property (point-min) (point-max) 'read-only t)))))
+                    (list
+                     file-name
+                     (current-buffer)
+                     (point-max))))))
 
 (define-erc-module image nil
   "Display inlined images in ERC buffer"
