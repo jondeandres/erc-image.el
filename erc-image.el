@@ -2,6 +2,7 @@
 
 ;; Copyright (C) 2012  Jon de Andrés Frías
 ;; Copyright (C) 2012  Raimon Grau Cuscó
+;; Copyright (C) 2012  David Vázquez
 
 ;; Author: Jon de Andrés Frías <jondeandres@gmail.com>
 ;; Author: Raimon Grau Cuscó <raimonster@gmail.com>
@@ -35,30 +36,31 @@
 ;;; Code:
 (require 'erc)
 
-(defun erc-image-get-url ()
-  "This function foo"
-  (let* ((url (thing-at-point 'url))
-         (file-name (concat "/tmp/" (car (last (split-string url "/"))))))
-    (when (string-match "\\.png$\\|\\.jpg$\\|\\.jpeg$" url)
-      ;; alternative way is
-      ;; http://stackoverflow.com/questions/4448055/download-a-file-with-emacs-lisp
-      (url-copy-file url file-name t t)
-      (create-image file-name))))
-
-(defun erc-image-find-image ()
-  (beginning-of-buffer)
-  (let ((url-found (search-forward "http" nil t)))
-    (when url-found
-      (erc-image-get-url))))
-
 (defun erc-image-show-url ()
   (interactive)
-  (let ((image (erc-image-find-image)))
-    (when image
-      (beginning-of-buffer)
-      (insert-image image "images")
-      (insert "\n")
-      (put-text-property (point-min) (point-max) 'read-only t))))
+  (goto-char (point-min))
+  (search-forward "http" nil t)
+  (let ((url (thing-at-point 'url))
+        (file-name))
+    (when (and url (string-match "\\.png$\\|\\.jpg$\\|\\.jpeg$" url))
+      (setq file-name (concat "/tmp/" (car (last (split-string url "/")))))
+      (when (string-match "\\.png$\\|\\.jpg$\\|\\.jpeg$" url)
+        (url-retrieve url
+                      (lambda  (status file-name buffer position)
+                        (goto-char (point-min))
+                        (search-forward "\n\n")
+                        (write-region (point) (point-max) file-name)
+                        (with-current-buffer buffer
+                          (save-excursion
+                            (let ((inhibit-read-only t))
+                              (goto-char position)
+                              (insert-image (create-image file-name) "[image]")
+                              (insert "\n")
+                              (put-text-property (point-min) (point-max) 'read-only t)))))
+                      (list
+                       file-name
+                       (current-buffer)
+                       (point-max)))))))
 
 (add-hook 'erc-insert-modify-hook 'erc-image-show-url t)
 (add-hook 'erc-send-modify-hook 'erc-image-show-url t)
