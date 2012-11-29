@@ -24,9 +24,6 @@
 ;;; Commentary:
 
 ;;; Show inlined images (png/jpg) in erc buffers.
-;;; usage:
-
-;;; (require 'erc-image)
 ;;;
 ;;; This plugin subscribes to hooks `erc-insert-modify-hook' and
 ;;; `erc-send-modify-hook' to download and show images. In this early
