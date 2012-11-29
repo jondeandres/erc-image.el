@@ -62,8 +62,14 @@
                        (current-buffer)
                        (point-max)))))))
 
-(add-hook 'erc-insert-modify-hook 'erc-image-show-url t)
-(add-hook 'erc-send-modify-hook 'erc-image-show-url t)
+
+(define-erc-module image nil
+  "Display inlined images in ERC buffer"
+  ((add-hook 'erc-insert-modify-hook 'erc-image-show-url t)
+   (add-hook 'erc-send-modify-hook 'erc-image-show-url t))
+  ((remove-hook 'erc-insert-modify-hook 'erc-image-show-url)
+   (remove-hook 'erc-send-modify-hook 'erc-image-show-url))
+  t)
 
 (provide 'erc-image)
 ;;; erc-image.el ends here
