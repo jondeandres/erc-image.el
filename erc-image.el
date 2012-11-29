@@ -36,7 +36,8 @@
 (require 'erc)
 
 (defun erc-image-get-url ()
-  "This function foo"
+  "This function fetchs the url found at cursor point only if it
+has these extensions: png, jpg or jpeg"
   (let* ((url (thing-at-point 'url))
          (file-name (concat "/tmp/" (car (last (split-string url "/"))))))
     (when (string-match "\\.png$\\|\\.jpg$\\|\\.jpeg$" url)
@@ -46,12 +47,15 @@
       (create-image file-name))))
 
 (defun erc-image-find-image ()
+  "Moves the cursor to the first match with 'http' in the buffer.
+The buffer here is just the received message in erc"
   (beginning-of-buffer)
   (let ((url-found (search-forward "http" nil t)))
     (when url-found
       (erc-image-get-url))))
 
 (defun erc-image-show-url ()
+  "Function to display an image in the erc buffer"
   (interactive)
   (let ((image (erc-image-find-image)))
     (when image
