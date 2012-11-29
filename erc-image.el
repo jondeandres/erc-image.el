@@ -64,18 +64,20 @@
                             (goto-char position)
                             (insert-image (create-image file-name) "[image]")
                             (insert "\n")
-                            (put-text-property (point-min) (point-max) 'read-only t)))))
+                            ;;(put-text-property (point-min) (point-max) 'read-only t)
+                            ))))
                     (list
                      file-name
                      (current-buffer)
-                     (point-max))))))
+                     (point-max))
+                    t))))
 
 (define-erc-module image nil
   "Display inlined images in ERC buffer"
-  ((add-hook 'erc-insert-modify-hook 'erc-image-show-url t)
-   (add-hook 'erc-send-modify-hook 'erc-image-show-url t))
-  ((remove-hook 'erc-insert-modify-hook 'erc-image-show-url)
-   (remove-hook 'erc-send-modify-hook 'erc-image-show-url))
+  ((add-hook 'erc-insert-modify-hook 'erc-image-show-url-image t)
+   (add-hook 'erc-send-modify-hook 'erc-image-show-url-image t))
+  ((remove-hook 'erc-insert-modify-hook 'erc-image-show-url-image)
+   (remove-hook 'erc-send-modify-hook 'erc-image-show-url-image))
   t)
 
 (provide 'erc-image)
