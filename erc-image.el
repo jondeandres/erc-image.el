@@ -50,23 +50,23 @@
         (file-name))
     (when (and url (string-match erc-image-regex url))
       (setq file-name (concat "/tmp/" (md5 url)))
+      (goto-char (point-max))
       (url-retrieve url
-                    (lambda  (status file-name buffer position)
+                    (lambda  (status file-name marker)
                       (goto-char (point-min))
                       (search-forward "\n\n")
                       (write-region (point) (point-max) file-name)
-                      (with-current-buffer buffer
+                      (with-current-buffer (marker-buffer marker)
                         (save-excursion
                           (let ((inhibit-read-only t))
-                            (goto-char position)
-                            (insert-image (create-image file-name) "[image]")
-                            (insert "\n")
-                            ;;(put-text-property (point-min) (point-max) 'read-only t)
-                            ))))
+                            (goto-char (marker-position marker))
+                            (insert-before-markers
+                             (propertize " " 'display (create-image file-name))
+                             "\n")
+                            (put-text-property (point-min) (point-max) 'read-only t)))))
                     (list
                      file-name
-                     (current-buffer)
-                     (point-max))
+                     (point-marker))
                     t))))
 
 (define-erc-module image nil
