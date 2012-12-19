@@ -6,6 +6,8 @@
 
 ;; Author: Jon de Andrés Frías <jondeandres@gmail.com>
 ;; Author: Raimon Grau Cuscó <raimonster@gmail.com>
+;; Version: 0.9
+;; Package-Requires: ((url-queue "1"))
 ;; Keywords: multimedia
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -22,15 +24,16 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-
-;;; Show inlined images (png/jpg) in erc buffers.
-;;;
-;;; This plugin subscribes to hooks `erc-insert-modify-hook' and
-;;; `erc-send-modify-hook' to download and show images. In this early
-;;; version it's doing this synchronously.
-
-
+;;
+;; Show inlined images (png/jpg) in erc buffers.
+;;
+;; This plugin subscribes to hooks `erc-insert-modify-hook' and
+;; `erc-send-modify-hook' to download and show images. In this early
+;; version it's doing this synchronously.
+;;
 ;;; Code:
+
+
 (require 'erc)
 
 (defgroup erc-image nil
@@ -51,7 +54,7 @@
     (when (and url (string-match erc-image-regex url))
       (setq file-name (concat "/tmp/" (md5 url)))
       (goto-char (point-max))
-      (url-retrieve url
+      (url-queue-retrieve url
                     (lambda  (status file-name marker)
                       (goto-char (point-min))
                       (search-forward "\n\n")
