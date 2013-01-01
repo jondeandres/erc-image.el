@@ -5,9 +5,8 @@
 ;; Copyright (C) 2012  David Vázquez
 
 ;; Author: Jon de Andrés Frías <jondeandres@gmail.com>
-;; Author: Raimon Grau Cuscó <raimonster@gmail.com>
+;;         Raimon Grau Cuscó <raimonster@gmail.com>
 ;; Version: 0.9
-;; Package-Requires: ((url-queue "1"))
 ;; Keywords: multimedia
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -25,7 +24,13 @@
 
 ;;; Commentary:
 ;;
-;; Show inlined images (png/jpg) in erc buffers.
+;; Show inlined images (png/jpg) in erc buffers. Requires emacs 24.2
+;;
+;; (require 'erc-image)
+;; (add-to-list 'erc-modules 'image)
+;; (erc-update-modules)
+;;
+;; Or `(require 'erc-image)` and  `M-x customize-option erc-modules RET`
 ;;
 ;; This plugin subscribes to hooks `erc-insert-modify-hook' and
 ;; `erc-send-modify-hook' to download and show images. In this early
@@ -35,6 +40,7 @@
 
 
 (require 'erc)
+(require 'url-queue)
 
 (defgroup erc-image nil
   "Enable image."
@@ -46,7 +52,6 @@
   :type '(regexp :tag "Regex"))
 
 (defun erc-image-show-url-image ()
-  (interactive)
   (goto-char (point-min))
   (search-forward "http" nil t)
   (let ((url (thing-at-point 'url))
@@ -72,6 +77,7 @@
                      (point-marker))
                     t))))
 
+;;;###autoload
 (define-erc-module image nil
   "Display inlined images in ERC buffer"
   ((add-hook 'erc-insert-modify-hook 'erc-image-show-url-image t)
