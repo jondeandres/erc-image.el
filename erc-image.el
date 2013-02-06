@@ -59,6 +59,9 @@
 (defvar erc-image-display-func 'erc-image-insert-inline)
 
 (defun erc-image-insert-other-buffer (status file-name marker)
+  (goto-char (point-min))
+  (search-forward "\n\n")
+  (write-region (point) (point-max) file-name)
   (image-dired-create-display-image-buffer)
   (display-buffer image-dired-display-image-buffer)
   (image-dired-display-image file-name))
