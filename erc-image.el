@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 ;;
-;; Show inlined images (png/jpg) in erc buffers. Requires emacs 24.2
+;; Show inlined images (png/jpg) in erc buffers.  Requires Emacs 24.2
 ;;
 ;; (require 'erc-image)
 ;; (add-to-list 'erc-modules 'image)
@@ -33,7 +33,7 @@
 ;; Or `(require 'erc-image)` and  `M-x customize-option erc-modules RET`
 ;;
 ;; This plugin subscribes to hooks `erc-insert-modify-hook' and
-;; `erc-send-modify-hook' to download and show images. In this early
+;; `erc-send-modify-hook' to download and show images.  In this early
 ;; version it's doing this synchronously.
 ;;
 ;;; Code:
@@ -48,17 +48,19 @@
   :group 'erc)
 
 (defcustom erc-image-regex "\\.png$\\|\\.jpg$\\|\\.jpeg$"
-  "Regex to mach URLs to be downloaded"
+  "Regex to mach URLs to be downloaded."
   :group 'erc-image
   :type '(regexp :tag "Regex"))
 
 (defcustom erc-image-images-path "/tmp/erc-images/"
-  "Path where to store downloaded images"
+  "Path where to store downloaded images."
   :group 'erc-image)
 
-(defvar erc-image-display-func 'erc-image-insert-inline)
+(defvar erc-image-display-func 'erc-image-insert-inline
+  "Function to use to display the image.")
 
 (defun erc-image-insert-other-buffer (status file-name marker)
+  "Open a new buffer and display file-name image there, scaled."
   (goto-char (point-min))
   (search-forward "\n\n")
   (write-region (point) (point-max) file-name)
@@ -67,6 +69,7 @@
   (image-dired-display-image file-name))
 
 (defun erc-image-insert-inline (status file-name marker)
+  "Open file-name image in the marker position."
   (goto-char (point-min))
   (search-forward "\n\n")
   (write-region (point) (point-max) file-name)
