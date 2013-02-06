@@ -36,6 +36,11 @@
 ;; `erc-send-modify-hook' to download and show images.  In this early
 ;; version it's doing this synchronously.
 ;;
+;; The function used to display the image is bound to the variable
+;; `erc-image-display-func'. There are two possible values for that,
+;; `erc-image-insert-inline' and `erc-image-insert-other-buffer'.
+;;
+;;
 ;;; Code:
 
 
