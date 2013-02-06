@@ -41,6 +41,7 @@
 
 (require 'erc)
 (require 'url-queue)
+(require 'image-dired)
 
 (defgroup erc-image nil
   "Enable image."
@@ -51,27 +52,43 @@
   :group 'erc-image
   :type '(regexp :tag "Regex"))
 
+(defcustom erc-image-images-path "/tmp/erc-images/"
+  "Path where to store downloaded images"
+  :group 'erc-image)
+
+(defvar erc-image-display-func 'erc-image-insert-inline)
+
+(defun erc-image-insert-other-buffer (status file-name marker)
+  (image-dired-create-display-image-buffer)
+  (display-buffer image-dired-display-image-buffer)
+  (image-dired-display-image file-name))
+
+(defun erc-image-insert-inline (status file-name marker)
+  (goto-char (point-min))
+  (search-forward "\n\n")
+  (write-region (point) (point-max) file-name)
+  (with-current-buffer (marker-buffer marker)
+    (save-excursion
+      (let ((inhibit-read-only t))
+	(goto-char (marker-position marker))
+	(insert-before-markers
+	 (propertize " " 'display (create-image file-name))
+	 "\n")
+	(put-text-property (point-min) (point-max) 'read-only t)))))
+
+;(image-dired-display-image FILE &optional ORIGINAL-SIZE)
+
 (defun erc-image-show-url-image ()
   (goto-char (point-min))
   (search-forward "http" nil t)
   (let ((url (thing-at-point 'url))
         (file-name))
     (when (and url (string-match erc-image-regex url))
-      (setq file-name (concat "/tmp/" (md5 url)))
+      (setq file-name (expand-file-name
+		       (concat erc-image-images-path "/" (md5 url))))
       (goto-char (point-max))
       (url-queue-retrieve url
-                    (lambda  (status file-name marker)
-                      (goto-char (point-min))
-                      (search-forward "\n\n")
-                      (write-region (point) (point-max) file-name)
-                      (with-current-buffer (marker-buffer marker)
-                        (save-excursion
-                          (let ((inhibit-read-only t))
-                            (goto-char (marker-position marker))
-                            (insert-before-markers
-                             (propertize " " 'display (create-image file-name))
-                             "\n")
-                            (put-text-property (point-min) (point-max) 'read-only t)))))
+			  erc-image-display-func
                     (list
                      file-name
                      (point-marker))
