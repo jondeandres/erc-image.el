@@ -58,7 +58,7 @@
   :group 'erc-image
   :type '(regexp :tag "Regex"))
 
-(defcustom erc-image-images-path "/tmp/erc-images/"
+(defcustom erc-image-images-path temporary-file-directory
   "Path where to store downloaded images."
   :group 'erc-image)
 
