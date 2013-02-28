@@ -107,13 +107,14 @@
                     t))))
 
 ;;;###autoload
-(define-erc-module image nil
-  "Display inlined images in ERC buffer"
-  ((add-hook 'erc-insert-modify-hook 'erc-image-show-url-image t)
-   (add-hook 'erc-send-modify-hook 'erc-image-show-url-image t))
-  ((remove-hook 'erc-insert-modify-hook 'erc-image-show-url-image)
-   (remove-hook 'erc-send-modify-hook 'erc-image-show-url-image))
-  t)
+(eval-after-load 'erc
+  '(define-erc-module image nil
+     "Display inlined images in ERC buffer"
+     ((add-hook 'erc-insert-modify-hook 'erc-image-show-url-image t)
+      (add-hook 'erc-send-modify-hook 'erc-image-show-url-image t))
+     ((remove-hook 'erc-insert-modify-hook 'erc-image-show-url-image)
+      (remove-hook 'erc-send-modify-hook 'erc-image-show-url-image))
+     t))
 
 (provide 'erc-image)
 ;;; erc-image.el ends here
