@@ -103,7 +103,7 @@
   (let* ((positions (window-inside-absolute-pixel-edges))
          (width (- (nth 2 positions) (nth 0 positions)))
          (height (- (nth 3 positions) (nth 1 positions))))
-    (if (or (fboundp 'imagemagick-types) (not erc-image-inline-rescale-to-window))
+    (if (and (fboundp 'imagemagick-types) erc-image-inline-rescale-to-window)
         (if (> width height)
             (create-image file-name 'imagemagick nil :height height)
           (create-image file-name 'imagemagick nil :width width))
