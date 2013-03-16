@@ -53,8 +53,8 @@
   "Enable image."
   :group 'erc)
 
-(defcustom erc-image-regex-alist '(("imgur\\.com" . erc-image-get-imgur-url)
-                                   ("\\.\\(png\\|jpg\\|jpeg\\)$" . identity))
+(defcustom erc-image-regex-alist '(("http://\\(www\\.\\)?imgur\\.com" . erc-image-get-imgur-url)
+                                   ("\\.\\(png\\|jpg\\|jpeg\\|gif\\)$" . identity))
   "Pairs of regex and function to match URLs to be downloaded.
 The function needs to have one argument to which the url will be
 supplied and it should return the real URL to download an image.
@@ -94,11 +94,13 @@ If several regex match prior occurring have higher priority."
   (write-region (point) (point-max) file-name)
   (with-current-buffer (marker-buffer marker)
     (save-excursion
-      (let ((inhibit-read-only t))
+      (let ((inhibit-read-only t)
+	    (im (erc-image-create-image file-name)))
 	(goto-char (marker-position marker))
 	(insert-before-markers
-	 (propertize " " 'display (erc-image-create-image file-name))
+	 (propertize " " 'display im)
 	 "\n")
+	(when (image-animated-p im) (image-animate im 0 t))
 	(put-text-property (point-min) (point-max) 'read-only t)))))
 
 (defun erc-image-create-image (file-name)
