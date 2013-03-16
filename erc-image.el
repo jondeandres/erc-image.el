@@ -113,8 +113,9 @@ image is bigger than the window."
          (image (create-image file-name))
          (dimensions (image-size image t)))
     (if (and (fboundp 'imagemagick-types) erc-image-inline-rescale-to-window
+             (not (image-animated-p image))
            (or (> (car dimensions) width)
-              (> (cdr dimensions) height)))
+               (> (cdr dimensions) height)))
         (if (> width height)
             (create-image file-name 'imagemagick nil :height height)
           (create-image file-name 'imagemagick nil :width width))
