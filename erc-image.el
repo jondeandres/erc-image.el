@@ -124,13 +124,14 @@ If several regex match prior occurring have higher priority."
     (when url
       (let ((file-name (expand-file-name (md5 url) erc-image-images-path))
             (dl (erc-image-extract-image-url url)))
-        (goto-char (point-max))
-        (url-queue-retrieve dl
-                            erc-image-display-func
-                            (list
-                             file-name
-                             (point-marker))
-                            t)))))
+        (when dl
+          (goto-char (point-max))
+          (url-queue-retrieve dl
+                              erc-image-display-func
+                              (list
+                               file-name
+                               (point-marker))
+                              t))))))
 
 (defun erc-image-extract-image-url (url)
   "Extract the download url using the RE and functions in
