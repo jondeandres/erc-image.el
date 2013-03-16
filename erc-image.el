@@ -73,7 +73,7 @@ If several regex match prior occurring have higher priority."
                  (const :tag "Other buffer" 'erc-image-insert-other-buffer)
                  function))
 
-(defcustom erc-image-inline-rescale-to-window t
+(defcustom erc-image-inline-rescale-to-window nil
   "Rescale to window height or width (whatever is smaller)."
   :group 'erc-image
   :type 'boolean)
