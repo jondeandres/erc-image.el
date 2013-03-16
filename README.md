@@ -18,7 +18,7 @@ This plugin subscribes to hooks `erc-insert-modify-hook` and
 
 ## Credits
 
-* (Raimon Grau)[https://github.com/kidd]
-* (David Vazquez)[https://github.com/davazp]
-* (Jon de Andres)[https://github.com/jondeandres]
-* (Michael Markert)[https://github.com/cofi]
+* [Raimon Grau](https://github.com/kidd)
+* [David Vazquez](https://github.com/davazp)
+* [Jon de Andres](https://github.com/jondeandres)
+* [Michael Markert](https://github.com/cofi)
