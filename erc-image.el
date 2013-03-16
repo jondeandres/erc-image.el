@@ -25,7 +25,8 @@
 
 ;;; Commentary:
 ;;
-;; Show inlined images (png/jpg) in erc buffers.  Requires Emacs 24.2
+;; Show inlined images (png/jpg/gif/svg) in erc buffers.  Requires
+;; Emacs 24.2
 ;;
 ;; (require 'erc-image)
 ;; (add-to-list 'erc-modules 'image)
