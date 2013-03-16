@@ -109,7 +109,6 @@ If several regex match prior occurring have higher priority."
   (let* ((positions (window-inside-absolute-pixel-edges))
          (width (- (nth 2 positions) (nth 0 positions)))
          (height (- (nth 3 positions) (nth 1 positions)))
-	 (shell-command)
 	 )
     (if (and (fboundp 'imagemagick-types) erc-image-inline-rescale-to-window )
         (if (> width height)
