@@ -54,7 +54,7 @@
   :group 'erc)
 
 (defcustom erc-image-regex-alist '(("http://\\(www\\.\\)?imgur\\.com" . erc-image-get-imgur-url)
-                                   ("\\.\\(png\\|jpg\\|jpeg\\|gif\\)$" . identity))
+                                   ("\\.\\(png\\|jpg\\|jpeg\\|gif\\|svg\\)$" . identity))
   "Pairs of regex and function to match URLs to be downloaded.
 The function needs to have one argument to which the url will be
 supplied and it should return the real URL to download an image.
@@ -108,8 +108,10 @@ If several regex match prior occurring have higher priority."
 `ERC-IMAGE-INLINE-RESCALE-TO-WINDOW' is non-nil."
   (let* ((positions (window-inside-absolute-pixel-edges))
          (width (- (nth 2 positions) (nth 0 positions)))
-         (height (- (nth 3 positions) (nth 1 positions))))
-    (if (and (fboundp 'imagemagick-types) erc-image-inline-rescale-to-window)
+         (height (- (nth 3 positions) (nth 1 positions)))
+	 (shell-command)
+	 )
+    (if (and (fboundp 'imagemagick-types) erc-image-inline-rescale-to-window )
         (if (> width height)
             (create-image file-name 'imagemagick nil :height height)
           (create-image file-name 'imagemagick nil :width width))
