@@ -55,6 +55,10 @@
   :group 'erc)
 
 (defcustom erc-image-regex-alist '(("http://\\(www\\.\\)?imgur\\.com" . erc-image-get-imgur-url)
+				   ("http://\\(www\\.\\)?memecaptain\\.com/gend_image_pages/" .
+				    erc-image-get-memecaptain-url)
+				   ("http://\\(www\\.\\)?memecrunch\\.com/meme/[^.]*$" .
+				    erc-image-get-memecrunch-url)
                                    ("\\.\\(png\\|jpg\\|jpeg\\|gif\\|svg\\)$" . identity))
   "Pairs of regex and function to match URLs to be downloaded.
 The function needs to have one argument to which the url will be
@@ -155,6 +159,19 @@ image is bigger than the window."
   (let ((id (progn (string-match "/\\([^/]*?\\)$" url)
                    (match-string 1 url))))
      (format "http://imgur.com/download/%s" id)))
+
+(defun erc-image-get-memecrunch-url (url)
+  "Return the download URL for the memecrunch `url'."
+  (let ((id (progn (string-match "http://memecrunch.com/meme/\\(.*?\\)$" url)
+                   (match-string 1 url))))
+     (format "http://memecrunch.com/meme/%s/image.png" id)))
+
+(defun erc-image-get-memecaptain-url (url)
+  "Return the download URL for the memecaptain `url'."
+  (let ((id (progn (string-match "/\\([^/]*?\\)$" url)
+                   (match-string 1 url))))
+     (format "http://memecaptain.com/gend_images/%s" id)))
+
 
 ;;;###autoload
 (eval-after-load 'erc
