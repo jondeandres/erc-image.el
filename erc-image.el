@@ -84,6 +84,13 @@ image is bigger than the window."
   :group 'erc-image
   :type 'boolean)
 
+(defcustom erc-image-inline-fixed-size nil
+  "Rescale the image to a fixed size, typically a thumbnail like value
+to prevent upscaling in most cases. If nil, the erc-image-inlin-rescale-to-window
+setting is still honoured."
+  :group 'erc-image
+  :type 'integer)
+
 (defun erc-image-insert-other-buffer (status file-name marker)
   "Open a new buffer and display file-name image there, scaled."
   (goto-char (point-min))
@@ -111,20 +118,27 @@ image is bigger than the window."
 
 (defun erc-image-create-image (file-name)
   "Create an image suitably scaled for the current window if
-`ERC-IMAGE-INLINE-RESCALE-TO-WINDOW' is non-nil."
+`ERC-IMAGE-INLINE-RESCALE-TO-WINDOW' is non-nil or, if
+'ERC-IMAGE-INLINE-FIXED-SIZE is non nil, use that setting."
   (let* ((positions (window-inside-absolute-pixel-edges))
          (width (- (nth 2 positions) (nth 0 positions)))
          (height (- (nth 3 positions) (nth 1 positions)))
          (image (create-image file-name))
          (dimensions (image-size image t)))
-    (if (and (fboundp 'imagemagick-types) erc-image-inline-rescale-to-window
-             (not (image-animated-p image))
-           (or (> (car dimensions) width)
-               (> (cdr dimensions) height)))
-        (if (> width height)
-            (create-image file-name 'imagemagick nil :height height)
-          (create-image file-name 'imagemagick nil :width width))
-      image)))
+    ; See if we want to scale to a fixed size
+    (if (and (fboundp 'imagemagick-types) erc-image-inline-fixed-size
+	     (not (image-animated-p image)))
+	;; Create a fixed size image
+	(create-image file-name 'imagemagick nil :height erc-image-inline-fixed-size)
+      ;; See if we want window scaling
+      (if (and (fboundp 'imagemagick-types) erc-image-inline-rescale-to-window
+	       (not (image-animated-p image))
+	       (or (> (car dimensions) width)
+		   (> (cdr dimensions) height)))
+	  (if (> width height)
+	      (create-image file-name 'imagemagick nil :height height)
+	    (create-image file-name 'imagemagick nil :width width)))
+	image)))
 
 ;(image-dired-display-image FILE &optional ORIGINAL-SIZE)
 
