@@ -164,7 +164,7 @@ image is bigger than the window."
 
 (defun erc-image-get-memecrunch-url (url)
   "Return the download URL for the memecrunch `url'."
-  (let ((id (progn (string-match "http://memecrunch.com/meme/\\(.*?\\)$" url)
+  (let ((id (progn (string-match "memecrunch.com/meme/\\(.*?\\)$" url)
                    (match-string 1 url))))
      (format "http://memecrunch.com/meme/%s/image.png" id)))
 
