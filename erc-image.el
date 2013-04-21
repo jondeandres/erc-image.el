@@ -42,6 +42,9 @@
 ;; `erc-image-display-func'. There are two possible values for that,
 ;; `erc-image-insert-inline' and `erc-image-insert-other-buffer'.
 ;;
+;; Set the value of erc-image-inline-rescale to a number for max size
+;; of images to be displayed (resized if bigger). set the value to
+;; 'window to take window height as this value
 ;;
 ;;; Code:
 
@@ -208,5 +211,9 @@ If several regex match prior occurring have higher priority."
       (remove-hook 'erc-send-modify-hook 'erc-image-show-url-image))
      t))
 
+(eval-when-compile
+  (message "Incompatible change: check the value of
+  erc-image-inline-rescale if you had set
+  erc-image-inline-rescale-to-window"))
 (provide 'erc-image)
 ;;; erc-image.el ends here
